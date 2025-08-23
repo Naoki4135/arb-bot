@@ -1,0 +1,4 @@
+ccxt==4.3.80
+requests==2.31.0
+python-dotenv==1.0.1
+

@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  arb-bot:
+    build: .
+    container_name: arb-bot
+    restart: always
+    env_file: .env
