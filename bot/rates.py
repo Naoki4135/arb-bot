@@ -4,6 +4,11 @@ import ccxt  # 各取引所APIライブラリ
 import requests  # HTTPリクエスト用ライブラリ
 
 _SOURCES = [('bybit','USDT/JPY'), ('mexc','USDT/JPY'), ('binance','USDT/JPY')]  # ccxtで参照する取引所と通貨ペア
+
+
+YAHOO_FINANCE_URL = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=USDJPY=X'  # YahooFinanceのUSDJPY取得URL
+
+
 _HTTP_SOURCES = [  # HTTPベースの為替レート取得元
     (
         'exchangerate.host',  # 為替APIサービス名
@@ -16,6 +21,7 @@ _HTTP_SOURCES = [  # HTTPベースの為替レート取得元
         lambda d: d['tether']['jpy'],  # JSONからJPYレートを抽出
     ),
 ]
+
 
 _clients = {}  # ccxtクライアントをキャッシュする辞書
 _cached_rate = None  # 直近取得した為替レートのキャッシュ
@@ -43,18 +49,19 @@ def try_fetch_usdtjpy_rate():  # USDT/JPYレートの取得を試みる
         except Exception:
             continue  # 失敗したら次へ
 
-    # then try simple HTTP APIs
-    for name, url, parse in _HTTP_SOURCES:  # HTTPベースの取得元を試す
-        try:
-            res = requests.get(url, timeout=5)  # APIにアクセス
-            if not res.ok:
-                continue  # ステータス異常ならスキップ
-            data = res.json()  # JSONを取得
-            v = parse(data)  # パーサーでレート抽出
-            if isinstance(v, (int, float)) and v > 0:
-                return float(v)  # 正の数値なら返す
-        except Exception:
-            continue  # 失敗したら次へ
+    # then try Yahoo Finance USD/JPY
+    try:
+        res = requests.get(YAHOO_FINANCE_URL, timeout=5)  # YahooFinanceから取得
+        if res.ok:
+            data = res.json()  # JSONデータを取得
+            result = data.get('quoteResponse', {}).get('result', [])  # 結果配列を取り出す
+            if result:
+                v = result[0].get('regularMarketPrice')  # 現在価格を抽出
+                if isinstance(v, (int, float)) and v > 0:  # 正の数値なら採用
+                    return float(v)
+    except Exception:
+        pass  # 失敗したら次へ
+
     return None  # すべて失敗した場合
 
 def get_usdtjpy_rate():  # USDT/JPYレートを取得する公開関数

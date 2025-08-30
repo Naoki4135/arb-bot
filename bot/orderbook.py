@@ -2,9 +2,9 @@ from . import settings  # 設定値を読み込む
 from .exchanges import bybit_public, bitbank_public  # 取引所APIクライアント生成関数
 from .utils import safe_best_price, now_str  # 補助関数のインポート
 
+
 _bybit = bybit_public()  # Bybitの公開APIクライアント
 _bitbank = bitbank_public()  # bitbankの公開APIクライアント
-
 
 def fetch_prices():  # 各取引所から価格を取得する
     results = {}  # 取得した価格を格納する辞書
@@ -21,7 +21,3 @@ def fetch_prices():  # 各取引所から価格を取得する
         except Exception as e:
             print(f"[{now_str()}] {base} 価格取得例外: {e}")  # 例外時のログ
     return results  # 取得結果を返す
-
-
-
-
