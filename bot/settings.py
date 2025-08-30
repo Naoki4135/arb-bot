@@ -10,8 +10,28 @@ BITBANK_SECRET_KEY = os.getenv('BITBANK_SECRET_KEY', '')
 DISCORD_WEBHOOK_URL = os.getenv('DISCORD_WEBHOOK_URL', '')
 
 # 監視シンボル
-SYMBOL_BYBIT = os.getenv('SYMBOL_BYBIT', 'XLM/USDT')
-SYMBOL_BITBANK = os.getenv('SYMBOL_BITBANK', 'XLM/JPY')
+_default_bybit = os.getenv('SYMBOL_BYBIT', 'XLM/USDT')
+_default_bitbank = os.getenv('SYMBOL_BITBANK', 'XLM/JPY')
+_symbols_bybit_env = os.getenv('SYMBOLS_BYBIT')
+_symbols_bitbank_env = os.getenv('SYMBOLS_BITBANK')
+
+# 複数監視に対応（カンマ区切り）
+SYMBOLS_BYBIT = [s.strip() for s in (
+    _symbols_bybit_env or _default_bybit
+).split(',') if s.strip()]
+SYMBOLS_BITBANK = [s.strip() for s in (
+    _symbols_bitbank_env or _default_bitbank
+).split(',') if s.strip()]
+
+# (base, bybit_symbol, bitbank_symbol) のタプル一覧
+MONITOR_SYMBOLS = [
+    (b.split('/')[0], b, bb)
+    for b, bb in zip(SYMBOLS_BYBIT, SYMBOLS_BITBANK)
+]
+
+# 後方互換: 先頭要素を旧定数に保持
+SYMBOL_BYBIT = SYMBOLS_BYBIT[0]
+SYMBOL_BITBANK = SYMBOLS_BITBANK[0]
 
 # 監視・通知パラメータ
 ARBITRAGE_THRESHOLD_JPY = float(os.getenv('ARBITRAGE_THRESHOLD_JPY', '1.0'))
