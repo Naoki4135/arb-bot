@@ -33,8 +33,9 @@ MONITOR_SYMBOLS = [  # 監視対象通貨ごとのシンボル対応リスト
 SYMBOL_BYBIT = SYMBOLS_BYBIT[0]  # 既存コードとの互換のため最初のシンボルを保持
 SYMBOL_BITBANK = SYMBOLS_BITBANK[0]  # 同上、bitbank用
 
+
 # 監視・通知パラメータ
-ARBITRAGE_THRESHOLD_JPY = float(os.getenv('ARBITRAGE_THRESHOLD_JPY', '1.0'))  # 通知を行う利ざやの閾値
+ARBITRAGE_THRESHOLD_JPY = float(os.getenv('ARBITRAGE_THRESHOLD_JPY', '0.1'))  # 通知を行う利ざやの閾値
 POLL_INTERVAL_SECONDS = float(os.getenv('POLL_INTERVAL_SECONDS', '5'))  # 価格取得の間隔秒数
 NOTIFY_COOLDOWN_SECONDS = float(os.getenv('NOTIFY_COOLDOWN_SECONDS', '60'))  # 通知後のクールダウン秒数
 RENOTIFY_MIN_DELTA_JPY = float(os.getenv('RENOTIFY_MIN_DELTA_JPY', '0.5'))  # 再通知に必要な差分円
