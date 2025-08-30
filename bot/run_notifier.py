@@ -9,7 +9,9 @@ from bot.notifier import send_discord  # Discord通知送信関数
 
 def main():  # メインループ
     print(f"[{now_str()}] Notifier開始（Docker）")  # 起動ログを出力
+
     last = {base: {'at': 0.0, 'ratio': None}  # 各通貨の最終通知時刻と価格比を保持
+
             for base, _, _ in settings.MONITOR_SYMBOLS}
 
     while True:  # 永久ループで監視
@@ -18,6 +20,7 @@ def main():  # メインループ
         if prices:  # 価格が取得できた場合
             usdtjpy = get_usdtjpy_rate()  # USDT/JPYレートを取得
             for base, p in prices.items():  # 通貨ごとに処理
+
                 bybit_jpy, ratio = jpy_ratio(
                     p['bybit_ask_usdt'], usdtjpy, p['bitbank_bid_jpy'])  # 円建て価格と価格比を計算
                 print(
@@ -34,6 +37,7 @@ def main():  # メインループ
                     )
                     send_discord(msg)  # Discordへ送信
                     info['at'], info['ratio'] = t0, ratio  # 通知情報を更新
+
                 else:  # 通知不要の場合
                     print(f"[{now_str()}] {base} 通知なし（{reason}）")  # 理由をログ出力
         time.sleep(max(0.0, settings.POLL_INTERVAL_SECONDS - (time.time() - t0)))  # インターバル調整
@@ -41,4 +45,3 @@ def main():  # メインループ
 
 if __name__ == '__main__':  # スクリプトが直接実行されたとき
     main()  # メイン関数を呼び出す
-

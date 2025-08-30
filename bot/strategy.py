@@ -1,6 +1,5 @@
 from . import settings  # 設定値を参照
 
-
 def jpy_ratio(bybit_ask_usdt, usdtjpy, bitbank_bid_jpy):  # 円建て価格と価格比を計算
     bybit_price_jpy = bybit_ask_usdt * usdtjpy  # BybitのUSDT建て価格を円換算
     ratio = bitbank_bid_jpy / bybit_price_jpy  # bitbank買い価格との比率を算出

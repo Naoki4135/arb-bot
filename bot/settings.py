@@ -39,6 +39,7 @@ POLL_INTERVAL_SECONDS = float(os.getenv('POLL_INTERVAL_SECONDS', '5'))  # 価格
 NOTIFY_COOLDOWN_SECONDS = float(os.getenv('NOTIFY_COOLDOWN_SECONDS', '60'))  # 通知後のクールダウン秒数
 RENOTIFY_MIN_DELTA_RATIO = float(os.getenv('RENOTIFY_MIN_DELTA_RATIO', '0.01'))  # 再通知に必要な比率差
 
+
 # 為替
 USE_DYNAMIC_USDTJPY = os.getenv('USE_DYNAMIC_USDTJPY', 'true').lower() == 'true'  # 為替を動的取得するか
 FALLBACK_USDTJPY_RATE = float(os.getenv('FALLBACK_USDTJPY_RATE', '146.97'))  # 為替取得失敗時のデフォルトレート

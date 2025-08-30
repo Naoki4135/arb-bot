@@ -4,7 +4,24 @@ import ccxt  # 各取引所APIライブラリ
 import requests  # HTTPリクエスト用ライブラリ
 
 _SOURCES = [('bybit','USDT/JPY'), ('mexc','USDT/JPY'), ('binance','USDT/JPY')]  # ccxtで参照する取引所と通貨ペア
+
+
 YAHOO_FINANCE_URL = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=USDJPY=X'  # YahooFinanceのUSDJPY取得URL
+
+
+_HTTP_SOURCES = [  # HTTPベースの為替レート取得元
+    (
+        'exchangerate.host',  # 為替APIサービス名
+        'https://api.exchangerate.host/latest?base=USD&symbols=JPY',  # 取得URL
+        lambda d: d['rates']['JPY'],  # JSONからJPYレートを抽出
+    ),
+    (
+        'coingecko',  # 代替の為替取得サービス
+        'https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=jpy',  # 取得URL
+        lambda d: d['tether']['jpy'],  # JSONからJPYレートを抽出
+    ),
+]
+
 
 _clients = {}  # ccxtクライアントをキャッシュする辞書
 _cached_rate = None  # 直近取得した為替レートのキャッシュ
@@ -44,6 +61,7 @@ def try_fetch_usdtjpy_rate():  # USDT/JPYレートの取得を試みる
                     return float(v)
     except Exception:
         pass  # 失敗したら次へ
+
     return None  # すべて失敗した場合
 
 def get_usdtjpy_rate():  # USDT/JPYレートを取得する公開関数
